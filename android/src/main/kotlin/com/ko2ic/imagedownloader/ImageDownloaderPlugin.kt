@@ -1,6 +1,5 @@
 package com.ko2ic.imagedownloader
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.ContentValues
@@ -20,13 +19,13 @@ import androidx.core.content.FileProvider
 import com.ko2ic.imagedownloader.ImageDownloaderPlugin.TemporaryDatabase.Companion.COLUMNS
 import com.ko2ic.imagedownloader.ImageDownloaderPlugin.TemporaryDatabase.Companion.TABLE_NAME
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
@@ -39,7 +38,7 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val activity = registrar.activity() ?: return
-            val context = registrar.context()
+            val context = registrar.context() ?: return
             val applicationContext = context.applicationContext
             val pluginInstance = ImageDownloaderPlugin()
             pluginInstance.setup(
@@ -228,7 +227,6 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         return data.mimeType
     }
 
-    @SuppressLint("Range")
     private fun findFileData(imageId: String, context: Context): FileData {
 
         if (inPublicDir) {
@@ -264,7 +262,8 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 val path = it.getString(it.getColumnIndex(MediaStore.Images.Media.DATA))
                 val name = it.getString(it.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
                 val size = it.getInt(it.getColumnIndex(MediaStore.Images.Media.SIZE))
-                val mimeType = it.getString(it.getColumnIndex(MediaStore.Images.Media.MIME_TYPE))
+                val mimeType =
+                    it.getString(it.getColumnIndex(MediaStore.Images.Media.MIME_TYPE))
                 FileData(path = path, name = name, byteSize = size, mimeType = mimeType)
             }
         }
@@ -396,7 +395,6 @@ class ImageDownloaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             }
         }
 
-        @SuppressLint("Range")
         private fun saveToDatabase(file: File, mimeType: String, inPublicDir: Boolean): String {
             val path = file.absolutePath
             val name = file.name
